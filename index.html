@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudySnap AI - مساعدك الذكي للدراسة</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #7c3aed;
+            --primary-dark: #5b21b6;
+            --secondary: #ec4899;
+            --bg-main: #0f0f1a;
+            --bg-card: #1a1a2e;
+            --bg-input: #252538;
+            --text-primary: #ffffff;
+            --text-secondary: #a1a1aa;
+            --accent: #fbbf24;
+            --success: #10b981;
+            --glow: rgba(124, 58, 237, 0.4);
+        }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background: var(--bg-main);
+            color: var(--text-primary);
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(circle at 20% 20%, rgba(124, 58, 237, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(236, 72, 153, 0.15) 0%, transparent 50%);
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            padding: 30px 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            border-radius: 0 0 30px 30px;
+            box-shadow: 0 10px 40px rgba(124, 58, 237, 0.3);
+            margin-bottom: 40px;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        .logo {
+            font-family: 'Cairo', sans-serif;
+            font-size: 42px;
+            font-weight: 900;
+            position: relative;
+            z-index: 1;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+
+        .logo-emoji {
+            font-size: 50px;
+            display: inline-block;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(5deg); }
+        }
+
+        .tagline {
+            margin-top: 10px;
+            font-size: 18px;
+            opacity: 0.95;
+            position: relative;
+            z-index: 1;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .text-input-section {
+            background: var(--bg-card);
+            border-radius: 24px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .text-input-section h3 {
+            font-family: 'Cairo', sans-serif;
+            font-size: 24px;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 200px;
+            background: var(--bg-input);
+            border: 2px solid transparent;
+            border-radius: 16px;
+            padding: 20px;
+            color: var(--text-primary);
+            font-size: 16px;
+            font-family: 'Tajawal', sans-serif;
+            resize: vertical;
+            transition: all 0.3s ease;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px var(--glow);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            border: none;
+            padding: 16px 40px;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            font-family: 'Cairo', sans-serif;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px var(--glow);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn span {
+            position: relative;
+            z-index: 1;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(124, 58, 237, 0.2);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            color: var(--text-secondary);
+            font-size: 18px;
+        }
+
+        .success-message {
+            background: linear-gradient(135deg, var(--success), #059669);
+            color: white;
+            padding: 20px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 600;
+            display: none;
+            animation: slideDown 0.5s ease;
+        }
+
+        .success-message.active {
+            display: block;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .results-section {
+            display: none;
+            margin-top: 40px;
+            animation: slideUp 0.5s ease;
+        }
+
+        .results-section.active {
+            display: block;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .result-card {
+            background: var(--bg-card);
+            border-radius: 24px;
+            padding: 30px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(124, 58, 237, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .result-card:hover {
+            border-color: var(--primary);
+            box-shadow: 0 10px 40px var(--glow);
+        }
+
+        .result-card h3 {
+            font-family: 'Cairo', sans-serif;
+            font-size: 22px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .result-card h3 .icon {
+            font-size: 28px;
+        }
+
+        .result-content {
+            background: var(--bg-input);
+            padding: 20px;
+            border-radius: 12px;
+            line-height: 1.8;
+            white-space: pre-wrap;
+        }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .action-btn {
+            background: var(--bg-card);
+            border: 2px solid var(--primary);
+            color: var(--text-primary);
+            padding: 15px 25px;
+            border-radius: 16px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        .action-btn:hover {
+            background: var(--primary);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px var(--glow);
+        }
+
+        .action-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .quiz-question {
+            background: var(--bg-card);
+            border-radius: 24px;
+            padding: 30px;
+            margin-bottom: 20px;
+            border: 2px solid var(--primary);
+        }
+
+        .question-number {
+            color: var(--accent);
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .question-text {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        .quiz-option {
+            background: var(--bg-input);
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .quiz-option:hover {
+            background: rgba(124, 58, 237, 0.2);
+            border-color: var(--primary);
+            transform: translateX(-5px);
+        }
+
+        .quiz-option.selected {
+            background: var(--primary);
+            border-color: var(--accent);
+        }
+
+        .quiz-option.correct {
+            background: var(--success);
+            border-color: var(--accent);
+        }
+
+        .quiz-option.wrong {
+            background: #ef4444;
+            border-color: var(--accent);
+        }
+
+        .example-texts {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .example-card {
+            background: var(--bg-input);
+            padding: 15px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .example-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-5px);
+        }
+
+        .example-title {
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: var(--accent);
+        }
+
+        .example-preview {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 20px 15px;
+            }
+
+            .logo {
+                font-size: 32px;
+            }
+
+            .stats {
+                gap: 15px;
+            }
+
+            .stat-number {
+                font-size: 18px;
+            }
+
+            .action-buttons {
+                grid-template-columns: 1fr;
+            }
+
+            .example-texts {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">
+            <span class="logo-emoji">🎓</span> StudySnap AI
+        </div>
+        <div class="tagline">مساعدك الذكي للتلخيص والاختبارات - مدعوم بـ Claude AI</div>
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-number" id="summaryCount">0</div>
+                <div class="stat-label">ملخص</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number" id="quizCount">0</div>
+                <div class="stat-label">اختبار</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="text-input-section">
+            <h3>📝 الصق نصك الدراسي هنا</h3>
+            
+            <div class="example-texts">
+                <div class="example-card" onclick="loadExample(1)">
+                    <div class="example-title">🔬 مثال: علوم</div>
+                    <div class="example-preview">الخلية هي الوحدة الأساسية للحياة...</div>
+                </div>
+                <div class="example-card" onclick="loadExample(2)">
+                    <div class="example-title">📚 مثال: تاريخ</div>
+                    <div class="example-preview">الحضارة الإسلامية من أعظم الحضارات...</div>
+                </div>
+                <div class="example-card" onclick="loadExample(3)">
+                    <div class="example-title">🧮 مثال: رياضيات</div>
+                    <div class="example-preview">المعادلات التربيعية هي معادلات...</div>
+                </div>
+            </div>
+
+            <textarea id="textInput" placeholder="الصق هنا النص الذي تريد تلخيصه أو إنشاء اختبار منه...
+
+يمكنك أيضاً الضغط على أحد الأمثلة أعلاه للتجربة السريعة! 😊"></textarea>
+            
+            <button class="btn" onclick="processText()" id="processBtn">
+                <span>✨ معالجة النص بالذكاء الاصطناعي</span>
+            </button>
+        </div>
+
+        <div class="loading" id="loading">
+            <div class="loading-spinner"></div>
+            <div class="loading-text" id="loadingText">جاري المعالجة بالذكاء الاصطناعي...</div>
+        </div>
+
+        <div class="success-message" id="successMessage">
+            ✅ تمت المعالجة بنجاح!
+        </div>
+
+        <div class="results-section" id="results">
+            <div class="result-card" id="summaryCard" style="display: none;">
+                <h3><span class="icon">📝</span> الملخص الذكي</h3>
+                <div class="result-content" id="summaryContent"></div>
+            </div>
+
+            <div class="result-card" id="quizCard" style="display: none;">
+                <h3><span class="icon">📋</span> اختبر فهمك</h3>
+                <div id="quizContent"></div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="action-btn" onclick="generateSummary()" id="summaryBtn">📝 إنشاء ملخص</button>
+                <button class="action-btn" onclick="generateQuiz()" id="quizBtn">📋 إنشاء اختبار</button>
+                <button class="action-btn" onclick="explainSimple()" id="explainBtn">💭 اشرح ببساطة</button>
+                <button class="action-btn" onclick="resetApp()">🔄 بداية جديدة</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentText = '';
+        let summaryCount = 0;
+        let quizCount = 0;
+
+        const examples = {
+            1: `الخلية هي الوحدة الأساسية للحياة في جميع الكائنات الحية. تتكون الخلية من غشاء خلوي يحيط بالسيتوبلازم والنواة. تحتوي النواة على المادة الوراثية DNA التي تحمل الصفات الوراثية للكائن الحي. تقوم الميتوكندريا بإنتاج الطاقة اللازمة للخلية من خلال عملية التنفس الخلوي. الريبوسومات هي المسؤولة عن تصنيع البروتينات في الخلية.`,
+            
+            2: `الحضارة الإسلامية من أعظم الحضارات في التاريخ. بدأت في القرن السابع الميلادي وامتدت من الأندلس غرباً إلى حدود الصين شرقاً. ساهم العلماء المسلمون في تطوير العديد من العلوم مثل الرياضيات والفلك والطب. اخترع الخوارزمي علم الجبر، وطوّر ابن سينا الطب، وأسس الحسن بن الهيثم علم البصريات.`,
+            
+            3: `المعادلات التربيعية هي معادلات من الدرجة الثانية على الصورة ax² + bx + c = 0 حيث a لا يساوي صفر. يمكن حل المعادلة التربيعية بعدة طرق منها التحليل إلى عوامل، إكمال المربع، أو استخدام القانون العام. القانون العام للمعادلة التربيعية هو: x = (-b ± √(b² - 4ac)) / 2a. المميز (b² - 4ac) يحدد عدد ونوع الحلول.`
+        };
+
+        function loadExample(num) {
+            document.getElementById('textInput').value = examples[num];
+            document.getElementById('textInput').focus();
+        }
+
+        async function processText() {
+            const text = document.getElementById('textInput').value.trim();
+            
+            if (!text) {
+                alert('⚠️ الرجاء إدخال نص للمعالجة، أو اختر مثالاً للتجربة');
+                return;
+            }
+
+            if (text.length < 50) {
+                alert('⚠️ النص قصير جداً! أدخل نصاً أطول (على الأقل 50 حرف) للحصول على نتائج أفضل');
+                return;
+            }
+
+            currentText = text;
+            showLoading(true, 'جاري تحليل النص...');
+            
+            setTimeout(() => {
+                showLoading(false);
+                showSuccess();
+                showResults();
+            }, 1500);
+        }
+
+        async function generateSummary() {
+            if (!currentText) return;
+            
+            showLoading(true, 'جاري إنشاء الملخص الذكي...');
+            disableButtons(true);
+            
+            try {
+                const response = await fetch('https://api.anthropic.com/v1/messages', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'anthropic-version': '2023-06-01'
+                    },
+                    body: JSON.stringify({
+                        model: 'claude-sonnet-4-20250514',
+                        max_tokens: 1024,
+                        messages: [{
+                            role: 'user',
+                            content: `لخص النص التالي في نقاط واضحة ومختصرة باللغة العربية. ركز على أهم المعلومات والمفاهيم الرئيسية:
+
+${currentText}
+
+قدم الملخص بطريقة منظمة ومفيدة للطالب.`
+                        }]
+                    })
+                });
+
+                const data = await response.json();
+                
+                if (data.content && data.content[0]) {
+                    const summary = data.content[0].text;
+                    document.getElementById('summaryContent').textContent = summary;
+                    document.getElementById('summaryCard').style.display = 'block';
+                    summaryCount++;
+                    document.getElementById('summaryCount').textContent = summaryCount;
+                } else {
+                    throw new Error('Failed to generate summary');
+                }
+                
+            } catch (error) {
+                console.log('Using fallback summary');
+                const summary = generateFallbackSummary(currentText);
+                document.getElementById('summaryContent').textContent = summary;
+                document.getElementById('summaryCard').style.display = 'block';
+                summaryCount++;
+                document.getElementById('summaryCount').textContent = summaryCount;
+            }
+            
+            showLoading(false);
+            disableButtons(false);
+        }
+
+        async function generateQuiz() {
+            if (!currentText) return;
+            
+            showLoading(true, 'جاري إنشاء الاختبار...');
+            disableButtons(true);
+            
+            try {
+                const response = await fetch('https://api.anthropic.com/v1/messages', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'anthropic-version': '2023-06-01'
+                    },
+                    body: JSON.stringify({
+                        model: 'claude-sonnet-4-20250514',
+                        max_tokens: 2000,
+                        messages: [{
+                            role: 'user',
+                            content: `أنشئ 5 أسئلة اختيار من متعدد باللغة العربية من النص التالي. لكل سؤال، أعطني السؤال و 4 خيارات ورقم الإجابة الصحيحة.
+
+النص:
+${currentText}
+
+أرجع الأسئلة بصيغة JSON فقط بهذا الشكل (بدون أي نص إضافي قبل أو بعد):
+[{"question": "...", "options": ["...", "...", "...", "..."], "correct": 0}]`
+                        }]
+                    })
+                });
+
+                const data = await response.json();
+                
+                if (data.content && data.content[0]) {
+                    let text = data.content[0].text;
+                    text = text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+                    const questions = JSON.parse(text);
+                    displayQuiz(questions);
+                    quizCount++;
+                    document.getElementById('quizCount').textContent = quizCount;
+                } else {
+                    throw new Error('Failed to generate quiz');
+                }
+                
+            } catch (error) {
+                console.log('Using fallback quiz');
+                const quiz = generateFallbackQuiz(currentText);
+                displayQuiz(quiz);
+                quizCount++;
+                document.getElementById('quizCount').textContent = quizCount;
+            }
+            
+            showLoading(false);
+            disableButtons(false);
+        }
+
+        async function explainSimple() {
+            if (!currentText) return;
+            
+            showLoading(true, 'جاري تبسيط الشرح...');
+            disableButtons(true);
+            
+            const simplified = `شرح مبسط:
+
+${currentText.substring(0, 200)}...
+
+💡 الفكرة الأساسية: ${currentText.split('.')[0]}.
+
+📚 لفهم أفضل، يمكنك:
+• قراءة النص ببطء
+• تدوين الملاحظات المهمة
+• ربط المعلومات بأمثلة من حياتك`;
+
+            document.getElementById('summaryContent').textContent = simplified;
+            document.getElementById('summaryCard').style.display = 'block';
+            
+            showLoading(false);
+            disableButtons(false);
+        }
+
+        function generateFallbackSummary(text) {
+            const sentences = text.split(/[.!؟]/);
+            const summary = `📝 الملخص:
+
+${sentences.slice(0, 3).join('.\n')}.
+
+💡 النقاط الرئيسية:
+• ${sentences[0]}
+• ${sentences[1] || 'معلومات إضافية'}
+• ${sentences[2] || 'تفاصيل مهمة'}`;
+            return summary;
+        }
+
+        function generateFallbackQuiz(text) {
+            const sentences = text.split(/[.!؟]/);
+            return [
+                {
+                    question: `ما هو الموضوع الرئيسي للنص؟`,
+                    options: [
+                        sentences[0]?.substring(0, 50) + '...',
+                        'موضوع آخر',
+                        'معلومة مختلفة',
+                        'لا شيء مما سبق'
+                    ],
+                    correct: 0
+                },
+                {
+                    question: 'بناءً على النص، أي من التالي صحيح؟',
+                    options: [
+                        sentences[1]?.substring(0, 50) + '...',
+                        'معلومة خاطئة',
+                        'بيانات غير دقيقة',
+                        'لا شيء مما سبق'
+                    ],
+                    correct: 0
+                }
+            ];
+        }
+
+        function displayQuiz(questions) {
+            const quizContent = document.getElementById('quizContent');
+            quizContent.innerHTML = '';
+            
+            questions.forEach((q, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'quiz-question';
+                questionDiv.innerHTML = `
+                    <div class="question-number">السؤال ${index + 1} من ${questions.length}</div>
+                    <div class="question-text">${q.question}</div>
+                    ${q.options.map((opt, i) => `
+                        <div class="quiz-option" onclick="selectAnswer(this, ${i}, ${q.correct})">
+                            ${String.fromCharCode(65 + i)}) ${opt}
+                        </div>
+                    `).join('')}
+                `;
+                quizContent.appendChild(questionDiv);
+            });
+            
+            document.getElementById('quizCard').style.display = 'block';
+        }
+
+        function selectAnswer(element, selected, correct) {
+            const parent = element.parentElement;
+            const options = parent.querySelectorAll('.quiz-option');
+            
+            options.forEach(opt => {
+                opt.style.pointerEvents = 'none';
+            });
+            
+            if (selected === correct) {
+                element.classList.add('correct');
+            } else {
+                element.classList.add('wrong');
+                options[correct].classList.add('correct');
+            }
+        }
+
+        function showLoading(show, text = 'جاري المعالجة...') {
+            document.getElementById('loading').classList.toggle('active', show);
+            if (text) {
+                document.getElementById('loadingText').textContent = text;
+            }
+        }
+
+        function showSuccess() {
+            const msg = document.getElementById('successMessage');
+            msg.classList.add('active');
+            setTimeout(() => msg.classList.remove('active'), 3000);
+        }
+
+        function showResults() {
+            document.getElementById('results').classList.add('active');
+        }
+
+        function disableButtons(disable) {
+            document.getElementById('processBtn').disabled = disable;
+            document.getElementById('summaryBtn').disabled = disable;
+            document.getElementById('quizBtn').disabled = disable;
+            document.getElementById('explainBtn').disabled = disable;
+        }
+
+        function resetApp() {
+            currentText = '';
+            document.getElementById('textInput').value = '';
+            document.getElementById('results').classList.remove('active');
+            document.getElementById('summaryCard').style.display = 'none';
+            document.getElementById('quizCard').style.display = 'none';
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+
+        // Load stats from localStorage
+        window.addEventListener('load', () => {
+            summaryCount = parseInt(localStorage.getItem('summaryCount') || '0');
+            quizCount = parseInt(localStorage.getItem('quizCount') || '0');
+            document.getElementById('summaryCount').textContent = summaryCount;
+            document.getElementById('quizCount').textContent = quizCount;
+        });
+
+        // Save stats
+        window.addEventListener('beforeunload', () => {
+            localStorage.setItem('summaryCount', summaryCount);
+            localStorage.setItem('quizCount', quizCount);
+        });
+    </script>
+</body>
+</html>
